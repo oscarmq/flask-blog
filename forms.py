@@ -11,10 +11,10 @@ class RegistrationForm(FlaskForm):
     email = StringField(label='Email',
                         validators=[DataRequired(), Email()])
 
-    password = StringField(label='Password',
+    password = PasswordField(label='Password',
                            validators=[DataRequired()])
 
-    confirm_password = StringField(label='Confirm Password',
+    confirm_password = PasswordField(label='Confirm Password',
                                    validators=[DataRequired(), EqualTo('password', message='')])
 
     submit = SubmitField(label='Sign Up')
@@ -25,7 +25,7 @@ class LoginForm(FlaskForm):
     email = StringField(label='Email',
                         validators=[DataRequired(), Email()])
 
-    password = StringField(label='Password',
+    password = PasswordField(label='Password',
                            validators=[DataRequired()])
 
     remember = BooleanField(label='Remember Me')
