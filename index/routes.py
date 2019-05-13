@@ -1,10 +1,8 @@
-from flask import Flask, render_template, url_for, flash, redirect
-from forms import RegistrationForm, LoginForm
+from index import app
+from flask import render_template, url_for, flash, redirect
+from index.forms import RegistrationForm, LoginForm
+from index.models import User, Post
 from datetime import datetime
-from config import SECRET_KEY
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = SECRET_KEY
 
 posts = [
     {
@@ -50,9 +48,6 @@ def login():
             flash('You have been logged in!', category='success')
             return redirect(url_for('home'))
         else:
-            flash('Login Unsuccessful. Please check username and password', category='danger')
+            flash('Login Unsuccessful. Please check username and password',
+                  category='danger')
     return render_template('login.html', title='Login', form=form)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
