@@ -2,7 +2,7 @@ from index import app, bcrypt, db
 from flask import render_template, url_for, flash, redirect
 from index.forms import RegistrationForm, LoginForm
 from index.models import User, Post
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
 
 posts = [
@@ -73,3 +73,9 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+@app.route("/account")
+@login_required
+def account():
+    return render_template('account.html', title='Account')
