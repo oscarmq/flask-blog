@@ -2,7 +2,7 @@ from index import app, bcrypt, db
 from flask import render_template, url_for, flash, redirect
 from index.forms import RegistrationForm, LoginForm
 from index.models import User, Post
-from flask_login import login_user
+from flask_login import login_user, current_user
 from datetime import datetime
 
 posts = [
@@ -34,6 +34,8 @@ def about():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
 
@@ -53,6 +55,8 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
