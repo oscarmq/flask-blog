@@ -1,6 +1,6 @@
 from index import app, bcrypt, db
 from flask import render_template, url_for, flash, redirect, request
-from index.forms import RegistrationForm, LoginForm
+from index.forms import RegistrationForm, LoginForm, PostForm
 from index.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
@@ -80,3 +80,13 @@ def logout():
 @login_required
 def account():
     return render_template('account.html', title='Account')
+
+
+@app.route("/post/create", methods=['GET', 'POST'])
+@login_required
+def create_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        flash('Your post has been created.', category='success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='Create Post', form=form)
