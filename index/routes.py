@@ -5,25 +5,11 @@ from index.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime
 
-posts = [
-    {
-        'author': 'Oscar Machado',
-        'title': 'Blog post 1',
-        'content': 'First post',
-        'day_posted': datetime.now()
-    },
-    {
-        'author': 'Carlos Machado',
-        'title': 'Blog post 1',
-        'content': 'First post',
-        'day_posted': datetime.now()
-    }
-]
-
 
 @app.route("/")
 @app.route("/home")
 def home():
+    posts = Post.query.all()
     return render_template('home.html', posts=posts)
 
 
@@ -87,6 +73,11 @@ def account():
 def create_post():
     form = PostForm()
     if form.validate_on_submit():
+        post = Post(title=form.title.data,
+                    content=form.content.data,
+                    author=current_user)
+        db.session.add(post)
+        db.session.commit()
         flash('Your post has been created.', category='success')
         return redirect(url_for('home'))
     return render_template('create_post.html', title='Create Post', form=form)
