@@ -38,3 +38,28 @@ class LoginForm(FlaskForm):
     remember = BooleanField(label='Remember Me')
 
     submit = SubmitField(label='Login')
+
+
+class ResetPasswordRequestForm(FlaskForm):
+
+    email = StringField(label='Email',
+                        validators=[DataRequired(), Email()])
+
+    submit = SubmitField(label='Reset Password Request')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if not user:
+            raise ValidationError(
+                'There is no account for this E-mail. Please register first.')
+
+
+class ResetPasswordForm(FlaskForm):
+
+    password = PasswordField(label='Password',
+                             validators=[DataRequired()])
+
+    confirm_password = PasswordField(label='Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password', message='Passwords do not match.')])
+
+    submit = SubmitField(label='Reset Password')

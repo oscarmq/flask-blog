@@ -1,6 +1,9 @@
 from index import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
+from time import time
+import jwt
+from index.config import ConfigManager
 
 
 @login_manager.user_loader
@@ -16,6 +19,21 @@ class User(db.Model, UserMixin):
                            default='default.jpg')
     password = db.Column(db.String(64), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+
+    def get_reset_password_token(self, expires_in=900):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp_time': time() + expires_in},
+            key=ConfigManager.SECRET_KEY, algorithm='HS256'
+        ).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, key=ConfigManager.SECRET_KEY, algorithms=['HS256'])['reset_password']
+        except:
+            return
+        else:
+            return User.query.get(id)
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
